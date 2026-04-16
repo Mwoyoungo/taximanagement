@@ -149,7 +149,7 @@ export default function Sidebar() {
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-[rgba(0,0,0,0.05)] z-50 flex items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-3">
           <div className="w-12 h-12 bg-[#ffc93e]/20 rounded-xl flex items-center justify-center p-1">
-            <Image src="/taxi-logo.svg" alt="Taxi Logo" width={44} height={30} className="object-contain" />
+            <Image src="/taxi-logo.png" alt="Taxi Logo" width={40} height={40} className="object-contain" />
           </div>
           <span className="font-semibold text-[#0d0d0d]">Taxi System</span>
         </Link>
@@ -187,7 +187,7 @@ export default function Sidebar() {
       <div className="p-6 border-b border-[rgba(0,0,0,0.05)]">
         <Link href="/" onClick={handleLinkClick} className="flex items-center gap-3">
           <div className="w-16 h-16 bg-[#ffc93e]/20 rounded-2xl flex items-center justify-center p-2">
-            <Image src="/taxi-logo.svg" alt="Taxi Logo" width={56} height={38} className="object-contain" />
+            <Image src="/taxi-logo.png" alt="Taxi Logo" width={52} height={52} className="object-contain" />
           </div>
           <div>
             <h1 className="text-[#0d0d0d] font-semibold text-base tracking-tight">Taxi System</h1>

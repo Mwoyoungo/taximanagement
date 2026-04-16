@@ -70,7 +70,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <div className="w-24 h-24 bg-[#ffc93e]/20 rounded-2xl flex items-center justify-center p-3">
-            <Image src="/taxi-logo.svg" alt="Taxi Logo" width={80} height={52} className="object-contain" />
+            <Image src="/taxi-logo.png" alt="Taxi Logo" width={72} height={72} className="object-contain" />
           </div>
         </div>
 
