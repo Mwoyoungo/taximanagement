@@ -77,7 +77,7 @@ export default function LoginPage() {
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-[#0d0d0d] tracking-tight mb-2">
-            Welcome Back
+            Taxi System Management
           </h1>
           <p className="text-[#666666]">
             Sign in to access your dashboard
