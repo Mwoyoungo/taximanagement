@@ -64,7 +64,7 @@ const sampleTrips: Trip[] = [
 ];
 
 const statusColors = {
-  Live: "bg-[#18E299] text-[#0d0d0d]",
+  Live: "bg-[#ffc93e] text-[#0d0d0d]",
   Completed: "bg-[#d4fae8] text-[#0fa76e]",
   Cancelled: "bg-[#f5f5f5] text-[#666666]",
 };
@@ -101,7 +101,7 @@ export default function TripsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 lg:mb-8">
         <div className="bg-white border border-[rgba(0,0,0,0.05)] rounded-2xl p-6 shadow-[rgba(0,0,0,0.03)_0px_2px_4px]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#18E299] rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-[#ffc93e] rounded-xl flex items-center justify-center">
               <svg className="w-5 h-5 text-[#0d0d0d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -154,7 +154,7 @@ export default function TripsPage() {
         >
           Live Trips
           {activeTab === "live" && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#18E299]"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#ffc93e]"></div>
           )}
         </button>
         <button
@@ -167,7 +167,7 @@ export default function TripsPage() {
         >
           Trip History
           {activeTab === "history" && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#18E299]"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#ffc93e]"></div>
           )}
         </button>
       </div>
@@ -193,7 +193,7 @@ export default function TripsPage() {
             placeholder="Search by route, driver, or taxi..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-full text-sm text-[#0d0d0d] placeholder-[#888888] focus:outline-none focus:border-[#18E299] focus:ring-1 focus:ring-[#18E299] transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-full text-sm text-[#0d0d0d] placeholder-[#888888] focus:outline-none focus:border-[#ffc93e] focus:ring-1 focus:ring-[#ffc93e] transition-all"
           />
         </div>
         {activeTab === "history" && (
@@ -203,7 +203,7 @@ export default function TripsPage() {
               type="date"
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#18E299] transition-colors"
+              className="px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#ffc93e] transition-colors"
             />
           </div>
         )}

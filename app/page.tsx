@@ -45,7 +45,7 @@ function ActivityItem({ title, description, time, status }: ActivityItemProps) {
   const statusColors = {
     completed: "bg-[#d4fae8] text-[#0fa76e]",
     pending: "bg-[#fafafa] text-[#666666]",
-    "in-progress": "bg-[#18E299] text-[#0d0d0d]",
+    "in-progress": "bg-[#ffc93e] text-[#0d0d0d]",
   };
 
   const statusLabels = {
@@ -57,7 +57,7 @@ function ActivityItem({ title, description, time, status }: ActivityItemProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 border-b border-[rgba(0,0,0,0.05)] last:border-0 gap-2 sm:gap-0">
       <div className="flex items-center gap-3 sm:gap-4">
-        <div className="w-2 h-2 rounded-full bg-[#18E299] shrink-0"></div>
+        <div className="w-2 h-2 rounded-full bg-[#ffc93e] shrink-0"></div>
         <div className="min-w-0">
           <p className="text-sm font-medium text-[#0d0d0d] truncate">{title}</p>
           <p className="text-xs text-[#888888] truncate">{description}</p>
@@ -103,7 +103,7 @@ export default function Dashboard() {
           <h1 className="text-3xl sm:text-[40px] font-semibold text-[#0d0d0d] tracking-tight leading-tight">
             {title}
           </h1>
-          <span className="px-3 py-1 bg-[#18E299] text-[#0d0d0d] rounded-full text-sm font-medium">
+          <span className="px-3 py-1 bg-[#ffc93e] text-[#0d0d0d] rounded-full text-sm font-medium">
             {user?.name || "User"}
           </span>
         </div>
@@ -209,25 +209,25 @@ export default function Dashboard() {
             <h2 className="text-lg sm:text-xl font-semibold text-[#0d0d0d] tracking-tight mb-4 sm:mb-6">Quick Actions</h2>
             <div className="space-y-3">
               <button className="w-full flex items-center gap-3 px-4 py-3 border border-[rgba(0,0,0,0.08)] rounded-xl text-sm font-medium text-[#0d0d0d] hover:bg-[#f5f5f5] transition-colors">
-                <svg className="w-5 h-5 text-[#18E299]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-[#ffc93e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
                 Add New Taxi
               </button>
               <button className="w-full flex items-center gap-3 px-4 py-3 border border-[rgba(0,0,0,0.08)] rounded-xl text-sm font-medium text-[#0d0d0d] hover:bg-[#f5f5f5] transition-colors">
-                <svg className="w-5 h-5 text-[#18E299]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-[#ffc93e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>
                 Register Driver
               </button>
               <button className="w-full flex items-center gap-3 px-4 py-3 border border-[rgba(0,0,0,0.08)] rounded-xl text-sm font-medium text-[#0d0d0d] hover:bg-[#f5f5f5] transition-colors">
-                <svg className="w-5 h-5 text-[#18E299]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-[#ffc93e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0121 18.382V7.618a1 1 0 01-.553-.894L15 7m0 13V7" />
                 </svg>
                 Create Route
               </button>
               <button className="w-full flex items-center gap-3 px-4 py-3 border border-[rgba(0,0,0,0.08)] rounded-xl text-sm font-medium text-[#0d0d0d] hover:bg-[#f5f5f5] transition-colors">
-                <svg className="w-5 h-5 text-[#18E299]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-[#ffc93e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Generate Report
@@ -241,7 +241,7 @@ export default function Dashboard() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-[#18E299]"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#ffc93e]"></div>
                   <span className="text-sm text-[#333333]">Active</span>
                 </div>
                 <span className="text-sm font-medium text-[#0d0d0d]">24</span>

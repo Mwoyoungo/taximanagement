@@ -56,7 +56,7 @@ const sampleUsers: User[] = [
 
 const roleColors = {
   Director: "bg-[#0d0d0d] text-white",
-  "Super Admin": "bg-[#18E299] text-[#0d0d0d]",
+  "Super Admin": "bg-[#ffc93e] text-[#0d0d0d]",
   "Junior Admin": "bg-[#d4fae8] text-[#0fa76e]",
   "Route Admin": "bg-[#f5f5f5] text-[#666666]",
   Owner: "bg-[#fef3c7] text-[#92400e]",
@@ -173,7 +173,7 @@ export default function UsersPage() {
             placeholder="Search by name, email, or role..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-full text-sm text-[#0d0d0d] placeholder-[#888888] focus:outline-none focus:border-[#18E299] focus:ring-1 focus:ring-[#18E299] transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-full text-sm text-[#0d0d0d] placeholder-[#888888] focus:outline-none focus:border-[#ffc93e] focus:ring-1 focus:ring-[#ffc93e] transition-all"
           />
         </div>
         <button
@@ -198,7 +198,7 @@ export default function UsersPage() {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#18E299] transition-colors"
+                className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#ffc93e] transition-colors"
                 placeholder="Enter full name"
               />
             </div>
@@ -208,7 +208,7 @@ export default function UsersPage() {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#18E299] transition-colors"
+                className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#ffc93e] transition-colors"
                 placeholder="user@taxi.com"
               />
             </div>
@@ -217,7 +217,7 @@ export default function UsersPage() {
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value as User["role"] })}
-                className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#18E299] transition-colors"
+                className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#ffc93e] transition-colors"
               >
                 <option value="Director">Director</option>
                 <option value="Super Admin">Super Admin</option>
@@ -231,7 +231,7 @@ export default function UsersPage() {
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as User["status"] })}
-                className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#18E299] transition-colors"
+                className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#ffc93e] transition-colors"
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>

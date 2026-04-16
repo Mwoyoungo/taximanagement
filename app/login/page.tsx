@@ -15,7 +15,7 @@ const roles: { value: UserRole; label: string; description: string; color: strin
     value: "Super Admin",
     label: "Super Admin",
     description: "System administration, user management",
-    color: "bg-[#18E299]",
+    color: "bg-[#ffc93e]",
   },
   {
     value: "Junior Admin",
@@ -68,7 +68,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <div className="w-16 h-16 bg-[#18E299] rounded-2xl flex items-center justify-center">
+          <div className="w-16 h-16 bg-[#ffc93e] rounded-2xl flex items-center justify-center">
             <svg className="w-8 h-8 text-[#0d0d0d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
             </svg>
@@ -97,7 +97,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
-              className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] placeholder-[#888888] focus:outline-none focus:border-[#18E299] focus:ring-1 focus:ring-[#18E299] transition-all"
+              className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] placeholder-[#888888] focus:outline-none focus:border-[#ffc93e] focus:ring-1 focus:ring-[#ffc93e] transition-all"
               required
             />
           </div>
@@ -112,7 +112,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] placeholder-[#888888] focus:outline-none focus:border-[#18E299] focus:ring-1 focus:ring-[#18E299] transition-all"
+              className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] placeholder-[#888888] focus:outline-none focus:border-[#ffc93e] focus:ring-1 focus:ring-[#ffc93e] transition-all"
               required
             />
           </div>
@@ -130,7 +130,7 @@ export default function LoginPage() {
                   onClick={() => setSelectedRole(role.value)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left ${
                     selectedRole === role.value
-                      ? "border-[#18E299] bg-[#f5f5f5]"
+                      ? "border-[#ffc93e] bg-[#f5f5f5]"
                       : "border-[rgba(0,0,0,0.08)] hover:bg-[#fafafa]"
                   }`}
                 >
@@ -142,7 +142,7 @@ export default function LoginPage() {
                     <p className="text-xs text-[#888888]">{role.description}</p>
                   </div>
                   {selectedRole === role.value && (
-                    <svg className="w-5 h-5 text-[#18E299]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#ffc93e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   )}

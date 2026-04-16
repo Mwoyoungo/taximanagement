@@ -95,7 +95,7 @@ const roleLabels: Record<UserRole, string> = {
 
 const roleColors: Record<UserRole, string> = {
   Director: "bg-[#0d0d0d] text-white",
-  "Super Admin": "bg-[#18E299] text-[#0d0d0d]",
+  "Super Admin": "bg-[#ffc93e] text-[#0d0d0d]",
   "Junior Admin": "bg-[#d4fae8] text-[#0fa76e]",
   "Route Admin": "bg-[#f5f5f5] text-[#666666]",
   Owner: "bg-[#fef3c7] text-[#92400e]",
@@ -147,7 +147,7 @@ export default function Sidebar() {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-[rgba(0,0,0,0.05)] z-50 flex items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#18E299] rounded-xl flex items-center justify-center">
+          <div className="w-8 h-8 bg-[#ffc93e] rounded-xl flex items-center justify-center">
             <svg className="w-5 h-5 text-[#0d0d0d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
             </svg>
@@ -187,7 +187,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-[rgba(0,0,0,0.05)]">
         <Link href="/" onClick={handleLinkClick} className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#18E299] rounded-2xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-[#ffc93e] rounded-2xl flex items-center justify-center">
             <svg className="w-6 h-6 text-[#0d0d0d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
             </svg>
@@ -211,7 +211,7 @@ export default function Sidebar() {
                   onClick={handleLinkClick}
                   className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? "bg-[#18E299] text-[#0d0d0d]"
+                      ? "bg-[#ffc93e] text-[#0d0d0d]"
                       : "text-[#666666] hover:text-[#0d0d0d] hover:bg-[#f5f5f5]"
                   }`}
                 >
