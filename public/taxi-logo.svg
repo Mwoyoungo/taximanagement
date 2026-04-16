@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" fill="none">
+  <!-- Car Body -->
+  <path d="M10 40 Q10 35 15 35 L25 35 L30 25 Q32 20 40 20 L60 20 Q68 20 70 25 L75 35 L85 35 Q90 35 90 40 L90 45 Q90 50 85 50 L15 50 Q10 50 10 45 Z" fill="#ffc93e"/>
+  <!-- Car Top -->
+  <path d="M35 20 L38 12 Q40 8 45 8 L55 8 Q60 8 62 12 L65 20" fill="#ffc93e"/>
+  <!-- Windows -->
+  <path d="M38 20 L40 14 Q42 12 48 12 L52 12 Q58 12 60 14 L62 20" fill="#333"/>
+  <!-- Windshield -->
+  <path d="M32 20 L30 25 L38 25 Z" fill="#333"/>
+  <!-- Headlights -->
+  <ellipse cx="12" cy="42" rx="3" ry="4" fill="#fff" opacity="0.8"/>
+  <ellipse cx="88" cy="42" rx="3" ry="4" fill="#fff" opacity="0.8"/>
+  <!-- Wheels -->
+  <circle cx="25" cy="50" r="8" fill="#333"/>
+  <circle cx="25" cy="50" r="4" fill="#666"/>
+  <circle cx="75" cy="50" r="8" fill="#333"/>
+  <circle cx="75" cy="50" r="4" fill="#666"/>
+  <!-- Taxi Sign -->
+  <rect x="42" y="3" width="16" height="6" rx="1" fill="#ffc93e"/>
+  <text x="50" y="8" text-anchor="middle" font-size="4" fill="#333" font-family="Arial" font-weight="bold">TAXI</text>
+  <!-- Grill -->
+  <rect x="12" y="46" width="8" height="2" rx="1" fill="#333"/>
+  <rect x="80" y="46" width="8" height="2" rx="1" fill="#333"/>
+</svg>

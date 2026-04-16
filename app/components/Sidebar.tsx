@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth, UserRole } from "../context/AuthContext";
+import Image from "next/image";
 
 interface NavItem {
   label: string;
@@ -147,10 +148,8 @@ export default function Sidebar() {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-[rgba(0,0,0,0.05)] z-50 flex items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#ffc93e] rounded-xl flex items-center justify-center">
-            <svg className="w-5 h-5 text-[#0d0d0d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
+          <div className="w-10 h-10 bg-[#ffc93e]/20 rounded-xl flex items-center justify-center">
+            <Image src="/taxi-logo.svg" alt="Taxi Logo" width={32} height={20} className="object-contain" />
           </div>
           <span className="font-semibold text-[#0d0d0d]">Taxi System</span>
         </Link>
@@ -187,10 +186,8 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-[rgba(0,0,0,0.05)]">
         <Link href="/" onClick={handleLinkClick} className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#ffc93e] rounded-2xl flex items-center justify-center">
-            <svg className="w-6 h-6 text-[#0d0d0d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
+          <div className="w-14 h-14 bg-[#ffc93e]/20 rounded-2xl flex items-center justify-center p-2">
+            <Image src="/taxi-logo.svg" alt="Taxi Logo" width={48} height={30} className="object-contain" />
           </div>
           <div>
             <h1 className="text-[#0d0d0d] font-semibold text-base tracking-tight">Taxi System</h1>

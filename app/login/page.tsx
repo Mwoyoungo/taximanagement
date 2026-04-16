@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAuth, UserRole } from "../context/AuthContext";
 
 const roles: { value: UserRole; label: string; description: string; color: string }[] = [
@@ -68,10 +69,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <div className="w-16 h-16 bg-[#ffc93e] rounded-2xl flex items-center justify-center">
-            <svg className="w-8 h-8 text-[#0d0d0d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
+          <div className="w-20 h-20 bg-[#ffc93e]/20 rounded-2xl flex items-center justify-center p-3">
+            <Image src="/taxi-logo.svg" alt="Taxi Logo" width={64} height={40} className="object-contain" />
           </div>
         </div>
 
