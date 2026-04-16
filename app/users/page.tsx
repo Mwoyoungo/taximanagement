@@ -6,7 +6,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: "Director" | "Super Admin" | "Junior Admin" | "Route Admin";
+  role: "Director" | "Super Admin" | "Junior Admin" | "Route Admin" | "Owner";
   status: "Active" | "Inactive";
   lastActive: string;
 }
@@ -59,6 +59,7 @@ const roleColors = {
   "Super Admin": "bg-[#18E299] text-[#0d0d0d]",
   "Junior Admin": "bg-[#d4fae8] text-[#0fa76e]",
   "Route Admin": "bg-[#f5f5f5] text-[#666666]",
+  Owner: "bg-[#fef3c7] text-[#92400e]",
 };
 
 const statusColors = {
@@ -118,7 +119,7 @@ export default function UsersPage() {
       </div>
 
       {/* Role Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 lg:mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 lg:mb-8">
         <div className="bg-white border border-[rgba(0,0,0,0.05)] rounded-2xl p-4 shadow-[rgba(0,0,0,0.03)_0px_2px_4px]">
           <p className="text-2xl font-semibold text-[#0d0d0d]">
             {users.filter((u) => u.role === "Director").length}
@@ -142,6 +143,12 @@ export default function UsersPage() {
             {users.filter((u) => u.role === "Route Admin").length}
           </p>
           <p className="text-sm text-[#666666]">Route Admins</p>
+        </div>
+        <div className="bg-white border border-[rgba(0,0,0,0.05)] rounded-2xl p-4 shadow-[rgba(0,0,0,0.03)_0px_2px_4px]">
+          <p className="text-2xl font-semibold text-[#0d0d0d]">
+            {users.filter((u) => u.role === "Owner").length}
+          </p>
+          <p className="text-sm text-[#666666]">Owners</p>
         </div>
       </div>
 
@@ -216,6 +223,7 @@ export default function UsersPage() {
                 <option value="Super Admin">Super Admin</option>
                 <option value="Junior Admin">Junior Admin</option>
                 <option value="Route Admin">Route Admin</option>
+                <option value="Owner">Owner</option>
               </select>
             </div>
             <div>

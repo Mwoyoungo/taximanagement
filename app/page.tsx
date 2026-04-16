@@ -1,5 +1,7 @@
 "use client";
 
+import { useAuth, UserRole } from "./context/AuthContext";
+
 interface StatCardProps {
   label: string;
   value: string;
@@ -71,16 +73,42 @@ function ActivityItem({ title, description, time, status }: ActivityItemProps) {
   );
 }
 
+const DASHBOARD_TITLES: Record<UserRole, string> = {
+  Director: "Director Dashboard",
+  "Super Admin": "Admin Dashboard",
+  "Junior Admin": "Operations Dashboard",
+  "Route Admin": "Route Manager Dashboard",
+  Owner: "My Fleet Dashboard",
+};
+
+const DASHBOARD_SUBTITLES: Record<UserRole, string> = {
+  Director: "Complete fleet overview and financial analytics",
+  "Super Admin": "System administration and user management",
+  "Junior Admin": "Monitor and manage daily trip operations",
+  "Route Admin": "Manage your assigned routes and schedules",
+  Owner: "View your taxis, drivers, and earnings",
+};
+
 export default function Dashboard() {
+  const { user } = useAuth();
+  const role = user?.role || "Super Admin";
+  const title = DASHBOARD_TITLES[role];
+  const subtitle = DASHBOARD_SUBTITLES[role];
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-6 lg:mb-10">
-        <h1 className="text-3xl sm:text-[40px] font-semibold text-[#0d0d0d] tracking-tight leading-tight">
-          Dashboard
-        </h1>
-        <p className="text-base sm:text-lg text-[#666666] mt-2 leading-relaxed">
-          Overview of your taxi fleet operations
+        <div className="flex items-center gap-3 mb-2">
+          <h1 className="text-3xl sm:text-[40px] font-semibold text-[#0d0d0d] tracking-tight leading-tight">
+            {title}
+          </h1>
+          <span className="px-3 py-1 bg-[#18E299] text-[#0d0d0d] rounded-full text-sm font-medium">
+            {user?.name || "User"}
+          </span>
+        </div>
+        <p className="text-base sm:text-lg text-[#666666] leading-relaxed">
+          {subtitle}
         </p>
       </div>
 

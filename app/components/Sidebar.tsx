@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useAuth, UserRole } from "../context/AuthContext";
 
 interface NavItem {
   label: string;
   href: string;
   icon: React.ReactNode;
+  allowedRoles: UserRole[];
 }
 
 const navItems: NavItem[] = [
@@ -19,15 +21,17 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
       </svg>
     ),
+    allowedRoles: ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
   },
   {
-    label: "Taxis",
+    label: "My Fleet",
     href: "/taxis",
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
       </svg>
     ),
+    allowedRoles: ["Director", "Super Admin", "Owner"],
   },
   {
     label: "Drivers",
@@ -37,6 +41,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
       </svg>
     ),
+    allowedRoles: ["Director", "Super Admin", "Route Admin", "Owner"],
   },
   {
     label: "Routes",
@@ -46,6 +51,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0121 18.382V7.618a1 1 0 01-.553-.894L15 7m0 13V7" />
       </svg>
     ),
+    allowedRoles: ["Director", "Super Admin", "Route Admin"],
   },
   {
     label: "Trips",
@@ -55,6 +61,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
+    allowedRoles: ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
   },
   {
     label: "Users",
@@ -64,11 +71,39 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
       </svg>
     ),
+    allowedRoles: ["Director", "Super Admin"],
+  },
+  {
+    label: "Owners",
+    href: "/owners",
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+    ),
+    allowedRoles: ["Director", "Super Admin"],
   },
 ];
 
+const roleLabels: Record<UserRole, string> = {
+  Director: "Director",
+  "Super Admin": "Super Admin",
+  "Junior Admin": "Junior Admin",
+  "Route Admin": "Route Admin",
+  Owner: "Fleet Owner",
+};
+
+const roleColors: Record<UserRole, string> = {
+  Director: "bg-[#0d0d0d] text-white",
+  "Super Admin": "bg-[#18E299] text-[#0d0d0d]",
+  "Junior Admin": "bg-[#d4fae8] text-[#0fa76e]",
+  "Route Admin": "bg-[#f5f5f5] text-[#666666]",
+  Owner: "bg-[#fef3c7] text-[#92400e]",
+};
+
 export default function Sidebar() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -90,6 +125,18 @@ export default function Sidebar() {
   }, []);
 
   const handleLinkClick = () => {
+    if (isMobile) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  // Filter nav items based on user role
+  const visibleNavItems = navItems.filter((item) =>
+    user ? item.allowedRoles.includes(user.role) : false
+  );
+
+  const handleLogout = () => {
+    logout();
     if (isMobile) {
       setIsMobileMenuOpen(false);
     }
@@ -155,7 +202,7 @@ export default function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 p-4">
         <ul className="space-y-1">
-          {navItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <li key={item.href}>
@@ -179,15 +226,31 @@ export default function Sidebar() {
 
       {/* User Profile */}
       <div className="p-4 border-t border-[rgba(0,0,0,0.05)]">
-        <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#fafafa]">
-          <div className="w-8 h-8 bg-[#0d0d0d] rounded-full flex items-center justify-center">
-            <span className="text-white text-xs font-semibold">SA</span>
+        <div className="px-4 py-3 rounded-2xl bg-[#fafafa] mb-3">
+          <div className="flex items-center gap-3 mb-2">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${roleColors[user?.role || "Super Admin"]}`}>
+              <span className="text-xs font-semibold">
+                {user?.name?.charAt(0).toUpperCase() || "U"}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[#0d0d0d] text-sm font-medium truncate">{user?.name || "User"}</p>
+              <p className="text-[#888888] text-xs truncate">{user?.email || "user@taxi.com"}</p>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[#0d0d0d] text-sm font-medium truncate">Super Admin</p>
-            <p className="text-[#888888] text-xs truncate">admin@taxi.com</p>
-          </div>
+          <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${roleColors[user?.role || "Super Admin"]}`}>
+            {roleLabels[user?.role || "Super Admin"]}
+          </span>
         </div>
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-[#666666] hover:text-[#0d0d0d] hover:bg-[#f5f5f5] transition-all"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          Sign Out
+        </button>
       </div>
       </aside>
     </>
