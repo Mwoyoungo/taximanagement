@@ -16,45 +16,6 @@ interface Owner {
   joinDate: string;
 }
 
-const sampleOwners: Owner[] = [
-  {
-    id: "1",
-    name: "John's Fleet",
-    email: "john@fleets.com",
-    phone: "+1 234-567-8901",
-    company: "John's Taxi Services Ltd",
-    taxiCount: 12,
-    driverCount: 15,
-    totalEarnings: "$45,230",
-    status: "Active",
-    joinDate: "2023-01-15",
-  },
-  {
-    id: "2",
-    name: "City Taxis Ltd",
-    email: "contact@citytaxis.com",
-    phone: "+1 234-567-8902",
-    company: "City Taxis Corporation",
-    taxiCount: 28,
-    driverCount: 32,
-    totalEarnings: "$128,450",
-    status: "Active",
-    joinDate: "2022-08-20",
-  },
-  {
-    id: "3",
-    name: "Metro Cars",
-    email: "info@metrocars.com",
-    phone: "+1 234-567-8903",
-    company: "Metro Transportation Inc",
-    taxiCount: 8,
-    driverCount: 10,
-    totalEarnings: "$23,890",
-    status: "Inactive",
-    joinDate: "2023-06-10",
-  },
-];
-
 const statusColors = {
   Active: "bg-[#d4fae8] text-[#0fa76e]",
   Inactive: "bg-[#f5f5f5] text-[#666666]",
@@ -62,7 +23,7 @@ const statusColors = {
 
 export default function OwnersPage() {
   const { user, hasPermission } = useAuth();
-  const [owners, setOwners] = useState<Owner[]>(sampleOwners);
+  const [owners, setOwners] = useState<Owner[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [formData, setFormData] = useState<Partial<Owner>>({

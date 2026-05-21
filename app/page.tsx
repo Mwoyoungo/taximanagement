@@ -1,6 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useAuth, UserRole } from "./context/AuthContext";
+import { getAllTripLogs, formatTimestamp, calculateDuration } from "./services/tripLogService";
+import { TripLog } from "./types/trip-log";
+import Link from "next/link";
 
 interface StatCardProps {
   label: string;
@@ -94,6 +98,34 @@ export default function Dashboard() {
   const role = user?.role || "Super Admin";
   const title = DASHBOARD_TITLES[role];
   const subtitle = DASHBOARD_SUBTITLES[role];
+  const [liveTrips, setLiveTrips] = useState<TripLog[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    loadLiveTrips();
+  }, []);
+
+  async function loadLiveTrips() {
+    setIsLoading(true);
+    try {
+      const allLogs = await getAllTripLogs();
+      // Get in-progress and recent completed trips
+      const recent = allLogs
+        .filter(log => log.status === "in-progress" || log.status === "completed")
+        .slice(0, 5);
+      setLiveTrips(recent);
+    } catch (error) {
+      console.error("Error loading trips:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function getTripStatus(log: TripLog): "completed" | "pending" | "in-progress" {
+    if (log.status === "completed") return "completed";
+    if (log.status === "in-progress") return "in-progress";
+    return "pending";
+  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
@@ -175,30 +207,31 @@ export default function Dashboard() {
               </button>
             </div>
             <div className="space-y-1">
-              <ActivityItem
-                title="Downtown to Airport"
-                description="Driver: John Smith • Taxi: Toyota Camry"
-                time="15 min"
-                status="in-progress"
-              />
-              <ActivityItem
-                title="City Center to Suburbs"
-                description="Driver: Sarah Johnson • Taxi: Honda Accord"
-                time="28 min"
-                status="in-progress"
-              />
-              <ActivityItem
-                title="Mall to Business District"
-                description="Driver: Michael Brown • Taxi: Ford Escape"
-                time="42 min"
-                status="completed"
-              />
-              <ActivityItem
-                title="Airport to Downtown"
-                description="Driver: Pending Assignment"
-                time="--"
-                status="pending"
-              />
+              {isLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin w-6 h-6 border-2 border-[#ffc93e] border-t-transparent rounded-full mx-auto"></div>
+                </div>
+              ) : liveTrips.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-[#888888] text-sm">No active trips</p>
+                  <p className="text-xs text-[#666666] mt-1">
+                    Add trips from the <Link href="/taxis" className="text-[#ffc93e] hover:underline">Taxis</Link> page
+                  </p>
+                </div>
+              ) : (
+                liveTrips.map((trip) => (
+                  <ActivityItem
+                    key={trip.id}
+                    title={`${trip.departureLocation} → ${trip.destination}`}
+                    description={`Driver: ${trip.driverName} • Taxi: ${trip.taxiRegistration}`}
+                    time={trip.arrivalTime 
+                      ? calculateDuration(trip.departureTime, trip.arrivalTime)
+                      : "In progress"
+                    }
+                    status={getTripStatus(trip)}
+                  />
+                ))
+              )}
             </div>
           </div>
         </div>

@@ -12,43 +12,13 @@ interface Driver {
   status: "Active" | "Inactive";
 }
 
-const sampleDrivers: Driver[] = [
-  {
-    id: "1",
-    name: "John Smith",
-    phone: "+1 555-0101",
-    licenseNumber: "DL-123456",
-    assignedTaxi: "Toyota Camry (ABC-1234)",
-    assignedRoute: "Downtown - Airport",
-    status: "Active",
-  },
-  {
-    id: "2",
-    name: "Sarah Johnson",
-    phone: "+1 555-0102",
-    licenseNumber: "DL-789012",
-    assignedTaxi: "Honda Accord (XYZ-7890)",
-    assignedRoute: "City Center - Suburbs",
-    status: "Active",
-  },
-  {
-    id: "3",
-    name: "Michael Brown",
-    phone: "+1 555-0103",
-    licenseNumber: "DL-345678",
-    assignedTaxi: "Not Assigned",
-    assignedRoute: "Not Assigned",
-    status: "Inactive",
-  },
-];
-
 const statusColors = {
   Active: "bg-[#d4fae8] text-[#0fa76e]",
   Inactive: "bg-[#f5f5f5] text-[#666666]",
 };
 
 export default function DriversPage() {
-  const [drivers, setDrivers] = useState<Driver[]>(sampleDrivers);
+  const [drivers, setDrivers] = useState<Driver[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [formData, setFormData] = useState<Partial<Driver>>({

@@ -5,17 +5,6 @@ import { useEffect } from "react";
 import { useAuth, UserRole } from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 
-// Define which roles can access which routes
-const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
-  "/": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
-  "/taxis": ["Director", "Super Admin", "Owner"],
-  "/drivers": ["Director", "Super Admin", "Route Admin", "Owner"],
-  "/routes": ["Director", "Super Admin", "Route Admin"],
-  "/trips": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
-  "/users": ["Director", "Super Admin"],
-  "/owners": ["Director", "Super Admin"],
-};
-
 // Role-specific dashboard titles
 const DASHBOARD_TITLES: Record<UserRole, string> = {
   Director: "Director Dashboard",
@@ -25,8 +14,20 @@ const DASHBOARD_TITLES: Record<UserRole, string> = {
   Owner: "My Fleet Dashboard",
 };
 
+// Add Logs route permissions
+const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
+  "/": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
+  "/taxis": ["Director", "Super Admin", "Owner"],
+  "/drivers": ["Director", "Super Admin", "Route Admin", "Owner"],
+  "/routes": ["Director", "Super Admin", "Route Admin"],
+  "/trips": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
+  "/logs": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
+  "/users": ["Director", "Super Admin"],
+  "/owners": ["Director", "Super Admin"],
+};
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user, hasPermission } = useAuth();
+  const { isAuthenticated, isLoading, hasPermission } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -34,6 +35,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const isPublicRoute = pathname === "/login";
 
   useEffect(() => {
+    // Don't redirect while loading
+    if (isLoading) return;
+
     // Redirect to login if not authenticated and not on public route
     if (!isAuthenticated && !isPublicRoute) {
       router.push("/login");
@@ -43,19 +47,30 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     if (isAuthenticated && isPublicRoute) {
       router.push("/");
     }
-  }, [isAuthenticated, pathname, router, isPublicRoute]);
+  }, [isAuthenticated, isLoading, pathname, router, isPublicRoute]);
 
   // Check permissions for protected routes
   useEffect(() => {
+    if (isLoading) return;
+
     if (isAuthenticated && !isPublicRoute) {
       const allowedRoles = ROUTE_PERMISSIONS[pathname];
       if (allowedRoles && !hasPermission(allowedRoles)) {
         router.push("/"); // Redirect to dashboard if no permission
       }
     }
-  }, [isAuthenticated, pathname, hasPermission, router, isPublicRoute]);
+  }, [isAuthenticated, isLoading, pathname, hasPermission, router, isPublicRoute]);
 
   // Show loading state while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-2 border-[#ffc93e] border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  // Show loading if not authenticated and not on public route
   if (!isAuthenticated && !isPublicRoute) {
     return (
       <div className="min-h-screen flex items-center justify-center">

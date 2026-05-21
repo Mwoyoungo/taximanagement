@@ -13,56 +13,6 @@ interface Trip {
   status: "Live" | "Completed" | "Cancelled";
 }
 
-const sampleTrips: Trip[] = [
-  {
-    id: "TRIP-001",
-    route: "Downtown to Airport",
-    driver: "John Smith",
-    taxi: "Toyota Camry (ABC-1234)",
-    startTime: "2024-01-15 08:30",
-    fare: 45,
-    status: "Live",
-  },
-  {
-    id: "TRIP-002",
-    route: "City Center to Suburbs",
-    driver: "Sarah Johnson",
-    taxi: "Honda Accord (XYZ-7890)",
-    startTime: "2024-01-15 09:15",
-    endTime: "2024-01-15 09:43",
-    fare: 32,
-    status: "Completed",
-  },
-  {
-    id: "TRIP-003",
-    route: "Mall to Business District",
-    driver: "Michael Brown",
-    taxi: "Ford Escape (DEF-5678)",
-    startTime: "2024-01-15 07:50",
-    endTime: "2024-01-15 08:12",
-    fare: 28,
-    status: "Completed",
-  },
-  {
-    id: "TRIP-004",
-    route: "Airport to Downtown",
-    driver: "Pending Assignment",
-    taxi: "Not Assigned",
-    startTime: "2024-01-15 10:00",
-    fare: 0,
-    status: "Cancelled",
-  },
-  {
-    id: "TRIP-005",
-    route: "Train Station to Hotel District",
-    driver: "David Wilson",
-    taxi: "Chevrolet Impala (GHI-9012)",
-    startTime: "2024-01-15 10:30",
-    fare: 22,
-    status: "Live",
-  },
-];
-
 const statusColors = {
   Live: "bg-[#ffc93e] text-[#0d0d0d]",
   Completed: "bg-[#d4fae8] text-[#0fa76e]",
@@ -70,7 +20,7 @@ const statusColors = {
 };
 
 export default function TripsPage() {
-  const [trips, setTrips] = useState<Trip[]>(sampleTrips);
+  const [trips, setTrips] = useState<Trip[]>([]);
   const [activeTab, setActiveTab] = useState<"live" | "history">("live");
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState("");

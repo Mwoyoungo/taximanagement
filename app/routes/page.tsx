@@ -14,49 +14,13 @@ interface Route {
   status: "Active" | "Inactive";
 }
 
-const sampleRoutes: Route[] = [
-  {
-    id: "1",
-    name: "Downtown - Airport",
-    startPoint: "City Center",
-    endPoint: "International Airport",
-    distance: "25 km",
-    estimatedTime: "45 min",
-    assignedAdmin: "Route Admin A",
-    vehiclesCount: 8,
-    status: "Active",
-  },
-  {
-    id: "2",
-    name: "City Center - Suburbs",
-    startPoint: "Main Square",
-    endPoint: "North Suburbs",
-    distance: "18 km",
-    estimatedTime: "30 min",
-    assignedAdmin: "Route Admin B",
-    vehiclesCount: 6,
-    status: "Active",
-  },
-  {
-    id: "3",
-    name: "Mall District Loop",
-    startPoint: "Shopping Mall",
-    endPoint: "Business District",
-    distance: "12 km",
-    estimatedTime: "20 min",
-    assignedAdmin: "Unassigned",
-    vehiclesCount: 0,
-    status: "Inactive",
-  },
-];
-
 const statusColors = {
   Active: "bg-[#d4fae8] text-[#0fa76e]",
   Inactive: "bg-[#f5f5f5] text-[#666666]",
 };
 
 export default function RoutesPage() {
-  const [routes, setRoutes] = useState<Route[]>(sampleRoutes);
+  const [routes, setRoutes] = useState<Route[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [formData, setFormData] = useState<Partial<Route>>({

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import TripLogModal from "@/app/components/TripLogModal";
 
 interface Taxi {
   id: string;
@@ -12,45 +13,6 @@ interface Taxi {
   status: "Active" | "Maintenance" | "Inactive";
 }
 
-const sampleTaxis: Taxi[] = [
-  {
-    id: "1",
-    registrationNumber: "ABC-1234",
-    model: "Toyota Camry",
-    capacity: 4,
-    owner: "John's Fleet",
-    assignedRoute: "Downtown - Airport",
-    status: "Active",
-  },
-  {
-    id: "2",
-    registrationNumber: "XYZ-7890",
-    model: "Honda Accord",
-    capacity: 4,
-    owner: "City Taxis Ltd",
-    assignedRoute: "City Center - Suburbs",
-    status: "Active",
-  },
-  {
-    id: "3",
-    registrationNumber: "DEF-5678",
-    model: "Ford Escape",
-    capacity: 5,
-    owner: "John's Fleet",
-    assignedRoute: "Mall District",
-    status: "Maintenance",
-  },
-  {
-    id: "4",
-    registrationNumber: "GHI-9012",
-    model: "Chevrolet Impala",
-    capacity: 4,
-    owner: "Metro Cars",
-    assignedRoute: "Not Assigned",
-    status: "Inactive",
-  },
-];
-
 const statusColors = {
   Active: "bg-[#d4fae8] text-[#0fa76e]",
   Maintenance: "bg-[#fef3c7] text-[#c37d0d]",
@@ -58,7 +20,7 @@ const statusColors = {
 };
 
 export default function TaxisPage() {
-  const [taxis, setTaxis] = useState<Taxi[]>(sampleTaxis);
+  const [taxis, setTaxis] = useState<Taxi[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [formData, setFormData] = useState<Partial<Taxi>>({
@@ -69,6 +31,8 @@ export default function TaxisPage() {
     assignedRoute: "",
     status: "Active",
   });
+  const [selectedTaxi, setSelectedTaxi] = useState<Taxi | null>(null);
+  const [showLogModal, setShowLogModal] = useState(false);
 
   const filteredTaxis = taxis.filter(
     (taxi) =>
@@ -233,9 +197,10 @@ export default function TaxisPage() {
         </div>
       )}
 
-      {/* Table */}
+      {/* Desktop Table / Mobile Cards */}
       <div className="bg-white border border-[rgba(0,0,0,0.05)] rounded-2xl shadow-[rgba(0,0,0,0.03)_0px_2px_4px] overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-[rgba(0,0,0,0.05)]">
@@ -245,6 +210,7 @@ export default function TaxisPage() {
                 <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Owner</th>
                 <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Route</th>
                 <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Status</th>
+                <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -277,17 +243,73 @@ export default function TaxisPage() {
                       {taxi.status}
                     </span>
                   </td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => {
+                        setSelectedTaxi(taxi);
+                        setShowLogModal(true);
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 bg-[#ffc93e] text-[#0d0d0d] rounded-full text-xs font-medium hover:opacity-90 transition-opacity"
+                      title="View trip logbook"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                      </svg>
+                      View Logbook
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden divide-y divide-[rgba(0,0,0,0.05)]">
+          {filteredTaxis.map((taxi) => (
+            <div key={taxi.id} className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-mono font-semibold text-[#0d0d0d]">{taxi.registrationNumber}</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[taxi.status]}`}>
+                  {taxi.status}
+                </span>
+              </div>
+              <div className="text-sm text-[#333333]">{taxi.model}</div>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div><span className="text-[#888888]">Capacity:</span> {taxi.capacity} seats</div>
+                <div><span className="text-[#888888]">Owner:</span> {taxi.owner}</div>
+              </div>
+              <div className="text-sm text-[#666666]">Route: {taxi.assignedRoute}</div>
+              <button
+                onClick={() => {
+                  setSelectedTaxi(taxi);
+                  setShowLogModal(true);
+                }}
+                className="w-full py-3 bg-[#ffc93e] text-[#0d0d0d] rounded-xl text-sm font-medium active:scale-95 transition-transform"
+              >
+                View Logbook
+              </button>
+            </div>
+          ))}
+        </div>
+
         {filteredTaxis.length === 0 && (
-          <div className="text-center py-12">
+          <div className="text-center py-12 px-4">
             <p className="text-[#888888] text-sm">No taxis found matching your search.</p>
           </div>
         )}
       </div>
+
+      {/* Trip Log Modal */}
+      <TripLogModal
+        taxiId={selectedTaxi?.id || ""}
+        taxiRegistration={selectedTaxi?.registrationNumber || ""}
+        isOpen={showLogModal}
+        onClose={() => {
+          setShowLogModal(false);
+          setSelectedTaxi(null);
+        }}
+      />
     </div>
   );
 }
