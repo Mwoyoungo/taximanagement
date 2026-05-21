@@ -1,17 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TripLogModal from "@/app/components/TripLogModal";
-
-interface Taxi {
-  id: string;
-  registrationNumber: string;
-  model: string;
-  capacity: number;
-  owner: string;
-  assignedRoute: string;
-  status: "Active" | "Maintenance" | "Inactive";
-}
+import { createTaxi, getAllTaxis, Taxi } from "@/app/services/taxiService";
 
 const statusColors = {
   Active: "bg-[#d4fae8] text-[#0fa76e]",
@@ -21,6 +12,7 @@ const statusColors = {
 
 export default function TaxisPage() {
   const [taxis, setTaxis] = useState<Taxi[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [formData, setFormData] = useState<Partial<Taxi>>({
@@ -34,6 +26,23 @@ export default function TaxisPage() {
   const [selectedTaxi, setSelectedTaxi] = useState<Taxi | null>(null);
   const [showLogModal, setShowLogModal] = useState(false);
 
+  // Load taxis from Firebase on mount
+  useEffect(() => {
+    loadTaxis();
+  }, []);
+
+  async function loadTaxis() {
+    setLoading(true);
+    try {
+      const data = await getAllTaxis();
+      setTaxis(data);
+    } catch (error) {
+      console.error("Error loading taxis:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const filteredTaxis = taxis.filter(
     (taxi) =>
       taxi.registrationNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -41,27 +50,32 @@ export default function TaxisPage() {
       taxi.owner.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleAddTaxi = () => {
+  const handleAddTaxi = async () => {
     if (formData.registrationNumber && formData.model) {
-      const newTaxi: Taxi = {
-        id: Date.now().toString(),
-        registrationNumber: formData.registrationNumber,
-        model: formData.model,
-        capacity: formData.capacity || 4,
-        owner: formData.owner || "Unassigned",
-        assignedRoute: formData.assignedRoute || "Not Assigned",
-        status: formData.status as "Active" | "Maintenance" | "Inactive",
-      };
-      setTaxis([...taxis, newTaxi]);
-      setShowForm(false);
-      setFormData({
-        registrationNumber: "",
-        model: "",
-        capacity: 4,
-        owner: "",
-        assignedRoute: "",
-        status: "Active",
-      });
+      try {
+        await createTaxi({
+          registrationNumber: formData.registrationNumber,
+          model: formData.model,
+          capacity: formData.capacity || 4,
+          owner: formData.owner || "Unassigned",
+          assignedRoute: formData.assignedRoute || "Not Assigned",
+          status: formData.status as "Active" | "Maintenance" | "Inactive",
+        });
+        // Reload taxis from Firebase
+        await loadTaxis();
+        setShowForm(false);
+        setFormData({
+          registrationNumber: "",
+          model: "",
+          capacity: 4,
+          owner: "",
+          assignedRoute: "",
+          status: "Active",
+        });
+      } catch (error) {
+        console.error("Error adding taxi:", error);
+        alert("Failed to add taxi. Please try again.");
+      }
     }
   };
 
@@ -293,9 +307,14 @@ export default function TaxisPage() {
           ))}
         </div>
 
-        {filteredTaxis.length === 0 && (
+        {loading ? (
           <div className="text-center py-12 px-4">
-            <p className="text-[#888888] text-sm">No taxis found matching your search.</p>
+            <div className="animate-spin w-8 h-8 border-2 border-[#ffc93e] border-t-transparent rounded-full mx-auto"></div>
+            <p className="text-sm text-[#666666] mt-2">Loading taxis...</p>
+          </div>
+        ) : filteredTaxis.length === 0 && (
+          <div className="text-center py-12 px-4">
+            <p className="text-[#888888] text-sm">No taxis found. Add your first taxi above!</p>
           </div>
         )}
       </div>

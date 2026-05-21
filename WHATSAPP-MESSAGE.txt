@@ -1,0 +1,20 @@
+🚕 *Taxi Management System - Ready!*
+
+🔗 *Website:* (Your Vercel link here)
+
+🔑 *Admin Login:*
+Email: admin@taxi.com
+Password: password123
+
+📱 Works on phone & computer!
+
+📝 *Quick Start:*
+1. Login with admin@taxi.com
+2. Go to "My Fleet" → "Add Taxi"
+3. Add a taxi, then click "View Logbook"
+4. Add trip entries and mark them complete
+5. Check Dashboard to see your earnings!
+
+💰 Revenue updates automatically when you complete trips.
+
+Need help? Just ask!
