@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth, UserRole } from "./context/AuthContext";
 import { getAllTripLogs, formatTimestamp, calculateDuration } from "./services/tripLogService";
+import { getDashboardStats, DashboardStats } from "./services/dashboardService";
 import { TripLog } from "./types/trip-log";
 import Link from "next/link";
 
@@ -98,11 +99,14 @@ export default function Dashboard() {
   const role = user?.role || "Super Admin";
   const title = DASHBOARD_TITLES[role];
   const subtitle = DASHBOARD_SUBTITLES[role];
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [liveTrips, setLiveTrips] = useState<TripLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadLiveTrips();
+    loadStats();
   }, []);
 
   async function loadLiveTrips() {
@@ -118,6 +122,18 @@ export default function Dashboard() {
       console.error("Error loading trips:", error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function loadStats() {
+    setStatsLoading(true);
+    try {
+      const dashboardStats = await getDashboardStats();
+      setStats(dashboardStats);
+    } catch (error) {
+      console.error("Error loading stats:", error);
+    } finally {
+      setStatsLoading(false);
     }
   }
 
@@ -146,50 +162,58 @@ export default function Dashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 lg:mb-10">
-        <StatCard
-          label="Active Taxis"
-          value="24"
-          change="+2 today"
-          changeType="positive"
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
-          }
-        />
-        <StatCard
-          label="Live Trips"
-          value="18"
-          change="5 completed"
-          changeType="neutral"
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          }
-        />
-        <StatCard
-          label="Drivers on Duty"
-          value="22"
-          change="-1 today"
-          changeType="negative"
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-          }
-        />
-        <StatCard
-          label="Revenue Today"
-          value="$2,840"
-          change="+12% vs yesterday"
-          changeType="positive"
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          }
-        />
+        {statsLoading ? (
+          <div className="col-span-full flex justify-center py-8">
+            <div className="animate-spin w-8 h-8 border-2 border-[#ffc93e] border-t-transparent rounded-full"></div>
+          </div>
+        ) : stats ? (
+          <>
+            <StatCard
+              label="Active Taxis"
+              value={stats.activeTaxis.toString()}
+              change="in fleet"
+              changeType="neutral"
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+              }
+            />
+            <StatCard
+              label="Live Trips"
+              value={stats.liveTrips.toString()}
+              change={`${stats.completedTripsToday} completed today`}
+              changeType="positive"
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              }
+            />
+            <StatCard
+              label="Drivers on Duty"
+              value={stats.driversOnDuty.toString()}
+              change="today"
+              changeType="neutral"
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              }
+            />
+            <StatCard
+              label="Revenue Today"
+              value={`$${stats.revenueToday.toFixed(2)}`}
+              change="from completed trips"
+              changeType="positive"
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              }
+            />
+          </>
+        ) : null}
       </div>
 
       {/* Two Column Layout */}
