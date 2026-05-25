@@ -1,18 +1,7 @@
 "use client";
 
-import { useState } from "react";
-
-interface Route {
-  id: string;
-  name: string;
-  startPoint: string;
-  endPoint: string;
-  distance: string;
-  estimatedTime: string;
-  assignedAdmin: string;
-  vehiclesCount: number;
-  status: "Active" | "Inactive";
-}
+import { useState, useEffect } from "react";
+import { createRoute, getAllRoutes, Route } from "@/app/services/routeService";
 
 const statusColors = {
   Active: "bg-[#d4fae8] text-[#0fa76e]",
@@ -21,6 +10,7 @@ const statusColors = {
 
 export default function RoutesPage() {
   const [routes, setRoutes] = useState<Route[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [formData, setFormData] = useState<Partial<Route>>({
@@ -33,6 +23,23 @@ export default function RoutesPage() {
     status: "Active",
   });
 
+  // Load routes from Firebase on mount
+  useEffect(() => {
+    loadRoutes();
+  }, []);
+
+  async function loadRoutes() {
+    setLoading(true);
+    try {
+      const data = await getAllRoutes();
+      setRoutes(data);
+    } catch (error) {
+      console.error("Error loading routes:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const filteredRoutes = routes.filter(
     (route) =>
       route.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -40,30 +47,34 @@ export default function RoutesPage() {
       route.endPoint.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleAddRoute = () => {
+  const handleAddRoute = async () => {
     if (formData.name && formData.startPoint && formData.endPoint) {
-      const newRoute: Route = {
-        id: Date.now().toString(),
-        name: formData.name,
-        startPoint: formData.startPoint,
-        endPoint: formData.endPoint,
-        distance: formData.distance || "0 km",
-        estimatedTime: formData.estimatedTime || "0 min",
-        assignedAdmin: formData.assignedAdmin || "Unassigned",
-        vehiclesCount: 0,
-        status: formData.status as "Active" | "Inactive",
-      };
-      setRoutes([...routes, newRoute]);
-      setShowForm(false);
-      setFormData({
-        name: "",
-        startPoint: "",
-        endPoint: "",
-        distance: "",
-        estimatedTime: "",
-        assignedAdmin: "",
-        status: "Active",
-      });
+      try {
+        await createRoute({
+          name: formData.name,
+          startPoint: formData.startPoint,
+          endPoint: formData.endPoint,
+          distance: formData.distance || "0 km",
+          estimatedTime: formData.estimatedTime || "0 min",
+          assignedAdmin: formData.assignedAdmin || "Unassigned",
+          status: formData.status as "Active" | "Inactive",
+        });
+        // Reload routes from Firebase
+        await loadRoutes();
+        setShowForm(false);
+        setFormData({
+          name: "",
+          startPoint: "",
+          endPoint: "",
+          distance: "",
+          estimatedTime: "",
+          assignedAdmin: "",
+          status: "Active",
+        });
+      } catch (error) {
+        console.error("Error creating route:", error);
+        alert("Failed to create route. Please try again.");
+      }
     }
   };
 
@@ -252,9 +263,14 @@ export default function RoutesPage() {
             </tbody>
           </table>
         </div>
-        {filteredRoutes.length === 0 && (
+        {loading ? (
           <div className="text-center py-12">
-            <p className="text-[#888888] text-sm">No routes found matching your search.</p>
+            <div className="animate-spin w-8 h-8 border-2 border-[#ffc93e] border-t-transparent rounded-full mx-auto"></div>
+            <p className="text-sm text-[#666666] mt-2">Loading routes...</p>
+          </div>
+        ) : filteredRoutes.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-[#888888] text-sm">No routes found. Create your first route above!</p>
           </div>
         )}
       </div>
