@@ -10,6 +10,8 @@ export interface TripLog {
   driverName: string;
   departureLocation: string;
   destination: string;
+  routeId?: string;
+  routeName?: string;
   departureTime: Timestamp | null;
   arrivalTime: Timestamp | null;
   distanceKm?: number;
@@ -27,6 +29,8 @@ export interface TripLogInput {
   driverName: string;
   departureLocation: string;
   destination: string;
+  routeId?: string;
+  routeName?: string;
   departureTime: Date;
   arrivalTime?: Date | null;
   distanceKm?: number;

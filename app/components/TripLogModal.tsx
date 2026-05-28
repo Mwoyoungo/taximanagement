@@ -11,6 +11,7 @@ import {
   formatTimestamp,
   calculateDuration,
 } from "@/app/services/tripLogService";
+import { getAllRoutes, Route } from "@/app/services/routeService";
 import { Timestamp } from "firebase/firestore";
 
 interface TripLogModalProps {
@@ -47,6 +48,8 @@ export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose
     driverName: "",
     departureLocation: "",
     destination: "",
+    routeId: "",
+    routeName: "",
     departureTime: new Date(),
     arrivalTime: null,
     distanceKm: undefined,
@@ -54,6 +57,9 @@ export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose
     notes: "",
     status: "in-progress",
   });
+  
+  // Routes for selector
+  const [routes, setRoutes] = useState<Route[]>([]);
 
   // Completion form state
   const [completionData, setCompletionData] = useState({
@@ -65,8 +71,18 @@ export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose
   useEffect(() => {
     if (isOpen && taxiId) {
       loadLogs();
+      loadRoutes();
     }
   }, [isOpen, taxiId]);
+  
+  async function loadRoutes() {
+    try {
+      const data = await getAllRoutes();
+      setRoutes(data.filter(r => r.status === "Active"));
+    } catch (error) {
+      console.error("Error loading routes:", error);
+    }
+  }
 
   async function loadLogs() {
     setLoading(true);
@@ -266,6 +282,28 @@ export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose
                       className="w-full px-4 py-2 border border-[rgba(0,0,0,0.08)] rounded-xl text-sm focus:outline-none focus:border-[#ffc93e]"
                       placeholder="Airport"
                     />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#333333] mb-2">Route (Optional)</label>
+                    <select
+                      value={formData.routeId || ""}
+                      onChange={(e) => {
+                        const selectedRoute = routes.find(r => r.id === e.target.value);
+                        setFormData({ 
+                          ...formData, 
+                          routeId: e.target.value || undefined,
+                          routeName: selectedRoute?.name || undefined
+                        });
+                      }}
+                      className="w-full px-4 py-2 border border-[rgba(0,0,0,0.08)] rounded-xl text-sm focus:outline-none focus:border-[#ffc93e]"
+                    >
+                      <option value="">Select a route (optional)</option>
+                      {routes.map((route) => (
+                        <option key={route.id} value={route.id}>
+                          {route.name} ({route.startPoint} → {route.endPoint})
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-[#333333] mb-2">Departure Time</label>

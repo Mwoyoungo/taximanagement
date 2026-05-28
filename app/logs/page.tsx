@@ -54,8 +54,10 @@ export default function LogsPage() {
 
     const matchesStatus = statusFilter === "all" || log.status === statusFilter;
     
-    // If route filter is set from URL, match trips that use this route
+    // If route filter is set from URL, match trips by routeName or routeId
     const matchesRoute = !routeFilter || 
+      log.routeName === routeFilter ||
+      log.routeName?.toLowerCase().includes(routeFilter.toLowerCase()) ||
       log.departureLocation.toLowerCase().includes(routeFilter.toLowerCase()) ||
       log.destination.toLowerCase().includes(routeFilter.toLowerCase());
 
