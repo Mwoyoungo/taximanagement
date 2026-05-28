@@ -292,7 +292,10 @@ export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose
                         setFormData({ 
                           ...formData, 
                           routeId: e.target.value || undefined,
-                          routeName: selectedRoute?.name || undefined
+                          routeName: selectedRoute?.name || undefined,
+                          // Auto-fill departure and destination from route
+                          departureLocation: selectedRoute?.startPoint || formData.departureLocation,
+                          destination: selectedRoute?.endPoint || formData.destination
                         });
                       }}
                       className="w-full px-4 py-2 border border-[rgba(0,0,0,0.08)] rounded-xl text-sm focus:outline-none focus:border-[#ffc93e]"
