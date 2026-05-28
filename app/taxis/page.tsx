@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import TripLogModal from "@/app/components/TripLogModal";
 import { createTaxi, getAllTaxis, Taxi } from "@/app/services/taxiService";
+import { getAllRoutes, Route } from "@/app/services/routeService";
 
 const statusColors = {
   Active: "bg-[#d4fae8] text-[#0fa76e]",
@@ -25,11 +26,22 @@ export default function TaxisPage() {
   });
   const [selectedTaxi, setSelectedTaxi] = useState<Taxi | null>(null);
   const [showLogModal, setShowLogModal] = useState(false);
+  const [routes, setRoutes] = useState<Route[]>([]);
 
-  // Load taxis from Firebase on mount
+  // Load taxis and routes from Firebase on mount
   useEffect(() => {
     loadTaxis();
+    loadRoutes();
   }, []);
+
+  async function loadRoutes() {
+    try {
+      const data = await getAllRoutes();
+      setRoutes(data.filter(r => r.status === "Active"));
+    } catch (error) {
+      console.error("Error loading routes:", error);
+    }
+  }
 
   async function loadTaxis() {
     setLoading(true);
@@ -173,13 +185,19 @@ export default function TaxisPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-[#333333] mb-2">Assigned Route</label>
-              <input
-                type="text"
-                value={formData.assignedRoute}
-                onChange={(e) => setFormData({ ...formData, assignedRoute: e.target.value })}
+              <select
+                value={formData.assignedRoute || ""}
+                onChange={(e) => setFormData({ ...formData, assignedRoute: e.target.value || "Not Assigned" })}
                 className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#ffc93e] transition-colors"
-                placeholder="Route name"
-              />
+              >
+                <option value="">Select a route (optional)</option>
+                {routes.length === 0 && <option value="" disabled>No routes available</option>}
+                {routes.map((route) => (
+                  <option key={route.id} value={route.name}>
+                    {route.name} ({route.startPoint} → {route.endPoint})
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-[#333333] mb-2">Status</label>

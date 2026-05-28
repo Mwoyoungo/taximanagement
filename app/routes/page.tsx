@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createRoute, getAllRoutes, Route } from "@/app/services/routeService";
+import { getUsersByRole, UserProfile } from "@/app/services/userService";
 import Link from "next/link";
 
 const statusColors = {
@@ -14,6 +15,7 @@ export default function RoutesPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [routeAdmins, setRouteAdmins] = useState<UserProfile[]>([]);
   const [formData, setFormData] = useState<Partial<Route>>({
     name: "",
     startPoint: "",
@@ -24,10 +26,20 @@ export default function RoutesPage() {
     status: "Active",
   });
 
-  // Load routes from Firebase on mount
+  // Load routes and route admins from Firebase on mount
   useEffect(() => {
     loadRoutes();
+    loadRouteAdmins();
   }, []);
+
+  async function loadRouteAdmins() {
+    try {
+      const data = await getUsersByRole("Route Admin");
+      setRouteAdmins(data.filter(u => u.isActive));
+    } catch (error) {
+      console.error("Error loading route admins:", error);
+    }
+  }
 
   async function loadRoutes() {
     setLoading(true);
@@ -189,8 +201,12 @@ export default function RoutesPage() {
                 className="w-full px-4 py-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl text-sm text-[#0d0d0d] focus:outline-none focus:border-[#ffc93e] transition-colors"
               >
                 <option value="">Select admin</option>
-                <option value="Route Admin A">Route Admin A</option>
-                <option value="Route Admin B">Route Admin B</option>
+                {routeAdmins.length === 0 && <option value="" disabled>No route admins available</option>}
+                {routeAdmins.map((admin) => (
+                  <option key={admin.uid} value={admin.name}>
+                    {admin.name} ({admin.email})
+                  </option>
+                ))}
               </select>
             </div>
           </div>
