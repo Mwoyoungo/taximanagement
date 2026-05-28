@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { TripLog } from "@/app/types/trip-log";
 import { getAllTripLogs, formatTimestamp, calculateDuration } from "@/app/services/tripLogService";
 import TripLogModal from "@/app/components/TripLogModal";
@@ -18,6 +19,9 @@ const statusLabels = {
 };
 
 export default function LogsPage() {
+  const searchParams = useSearchParams();
+  const routeFilter = searchParams.get("route");
+  
   const [logs, setLogs] = useState<TripLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,8 +53,13 @@ export default function LogsPage() {
       log.destination.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesStatus = statusFilter === "all" || log.status === statusFilter;
+    
+    // If route filter is set from URL, match trips that use this route
+    const matchesRoute = !routeFilter || 
+      log.departureLocation.toLowerCase().includes(routeFilter.toLowerCase()) ||
+      log.destination.toLowerCase().includes(routeFilter.toLowerCase());
 
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesRoute;
   });
 
   const stats = {
@@ -70,11 +79,25 @@ export default function LogsPage() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-6 lg:mb-8">
-        <h1 className="text-3xl sm:text-[40px] font-semibold text-[#0d0d0d] tracking-tight leading-tight">
-          Trip Logs
-        </h1>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <h1 className="text-3xl sm:text-[40px] font-semibold text-[#0d0d0d] tracking-tight leading-tight">
+            Trip Logs
+          </h1>
+          {routeFilter && (
+            <div className="flex items-center gap-2 px-4 py-2 bg-[#ffc93e] text-[#0d0d0d] rounded-full text-sm font-medium">
+              <span>Route: {routeFilter}</span>
+              <a href="/logs" className="hover:opacity-70">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </a>
+            </div>
+          )}
+        </div>
         <p className="text-base sm:text-lg text-[#666666] mt-2 leading-relaxed">
-          View and track all taxi trip records across your fleet
+          {routeFilter 
+            ? `Viewing trips for route: ${routeFilter}`
+            : "View and track all taxi trip records across your fleet"}
         </p>
       </div>
 

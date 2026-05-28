@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createRoute, getAllRoutes, Route } from "@/app/services/routeService";
+import Link from "next/link";
 
 const statusColors = {
   Active: "bg-[#d4fae8] text-[#0fa76e]",
@@ -224,6 +225,7 @@ export default function RoutesPage() {
                 <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Admin</th>
                 <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Vehicles</th>
                 <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Status</th>
+                <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -258,11 +260,55 @@ export default function RoutesPage() {
                       {route.status}
                     </span>
                   </td>
+                  <td className="px-6 py-4">
+                    <Link
+                      href={`/logs?route=${encodeURIComponent(route.name)}`}
+                      className="flex items-center gap-2 px-4 py-2 bg-[#ffc93e] text-[#0d0d0d] rounded-full text-xs font-medium hover:opacity-90 transition-opacity"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                      </svg>
+                      View Trips
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden divide-y divide-[rgba(0,0,0,0.05)]">
+          {filteredRoutes.map((route) => (
+            <div key={route.id} className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-[#0d0d0d]">{route.name}</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[route.status]}`}>
+                  {route.status}
+                </span>
+              </div>
+              <div className="text-sm text-[#333333]">
+                {route.startPoint} → {route.endPoint}
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div><span className="text-[#888888]">Distance:</span> {route.distance}</div>
+                <div><span className="text-[#888888]">Time:</span> {route.estimatedTime}</div>
+                <div><span className="text-[#888888]">Admin:</span> {route.assignedAdmin}</div>
+                <div><span className="text-[#888888]">Vehicles:</span> {route.vehiclesCount}</div>
+              </div>
+              <Link
+                href={`/logs?route=${encodeURIComponent(route.name)}`}
+                className="w-full py-3 bg-[#ffc93e] text-[#0d0d0d] rounded-xl text-sm font-medium active:scale-95 transition-transform flex items-center justify-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+                View Trips
+              </Link>
+            </div>
+          ))}
+        </div>
+
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin w-8 h-8 border-2 border-[#ffc93e] border-t-transparent rounded-full mx-auto"></div>
