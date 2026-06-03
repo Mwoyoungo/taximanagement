@@ -27,6 +27,12 @@ export async function createTripLog(data: TripLogInput): Promise<string> {
   if (data.fare !== undefined && data.fare !== null) {
     tripLogData.fare = data.fare;
   }
+  if (data.routeId && data.routeId.trim() !== "") {
+    tripLogData.routeId = data.routeId;
+  }
+  if (data.routeName && data.routeName.trim() !== "") {
+    tripLogData.routeName = data.routeName;
+  }
 
   const docRef = await addDoc(collection(db, TRIP_LOGS_COLLECTION), tripLogData);
   return docRef.id;

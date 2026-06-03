@@ -172,6 +172,8 @@ export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose
       driverName: "",
       departureLocation: "",
       destination: "",
+      routeId: "",
+      routeName: "",
       departureTime: new Date(),
       arrivalTime: null,
       distanceKm: undefined,
