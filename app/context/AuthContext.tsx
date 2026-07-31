@@ -13,7 +13,7 @@ import {
 } from "@/app/lib/firebase";
 import { getUserProfile, createUserProfile, updateUserProfile, type UserProfile } from "@/app/services/userService";
 
-export type UserRole = "Director" | "Super Admin" | "Junior Admin" | "Route Admin" | "Owner";
+export type UserRole = "Director" | "Super Admin" | "Junior Admin" | "Route Admin" | "Owner" | "Driver";
 
 interface User {
   id: string;
@@ -36,6 +36,7 @@ interface AuthContextType {
   isLoading: boolean;
   hasPermission: (allowedRoles: UserRole[]) => boolean;
   updateUserRole: (uid: string, role: UserRole) => Promise<void>;
+  isReadOnly: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -197,6 +198,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         hasPermission,
         updateUserRole,
+        isReadOnly: user?.role === "Driver",
       }}
     >
       {children}

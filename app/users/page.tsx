@@ -16,12 +16,13 @@ interface DisplayUser {
   createdAt: Date;
 }
 
-const roleColors = {
+const roleColors: Record<UserRole, string> = {
   Director: "bg-[#0d0d0d] text-white",
   "Super Admin": "bg-[#ffc93e] text-[#0d0d0d]",
   "Junior Admin": "bg-[#d4fae8] text-[#0fa76e]",
   "Route Admin": "bg-[#f5f5f5] text-[#666666]",
   Owner: "bg-[#fef3c7] text-[#92400e]",
+  Driver: "bg-[#e0f2fe] text-[#0369a1]",
 };
 
 const statusColors = {
@@ -161,7 +162,7 @@ export default function UsersPage() {
       </div>
 
       {/* Role Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 lg:mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4 mb-6 lg:mb-8">
         <div className="bg-white border border-[rgba(0,0,0,0.05)] rounded-2xl p-4 shadow-[rgba(0,0,0,0.03)_0px_2px_4px]">
           <p className="text-2xl font-semibold text-[#0d0d0d]">
             {users.filter((u) => u.role === "Director").length}
@@ -191,6 +192,12 @@ export default function UsersPage() {
             {users.filter((u) => u.role === "Owner").length}
           </p>
           <p className="text-sm text-[#666666]">Owners</p>
+        </div>
+        <div className="bg-white border border-[rgba(0,0,0,0.05)] rounded-2xl p-4 shadow-[rgba(0,0,0,0.03)_0px_2px_4px]">
+          <p className="text-2xl font-semibold text-[#0d0d0d]">
+            {users.filter((u) => u.role === "Driver").length}
+          </p>
+          <p className="text-sm text-[#666666]">Drivers</p>
         </div>
       </div>
 
@@ -304,6 +311,7 @@ export default function UsersPage() {
                 <option value="Junior Admin">Junior Admin</option>
                 <option value="Route Admin">Route Admin</option>
                 <option value="Owner">Owner</option>
+                <option value="Driver">Driver (Read Only)</option>
               </select>
             </div>
             <div>

@@ -13,6 +13,7 @@ import {
 } from "@/app/services/tripLogService";
 import { getAllRoutes, Route } from "@/app/services/routeService";
 import { Timestamp } from "firebase/firestore";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface TripLogModalProps {
   taxiId: string;
@@ -34,6 +35,7 @@ const statusLabels: Record<TripStatus, string> = {
 };
 
 export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose }: TripLogModalProps) {
+  const { isReadOnly } = useAuth();
   const [logs, setLogs] = useState<TripLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -235,7 +237,7 @@ export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           {/* Add/Edit Form */}
-          {showAddForm && (
+          {showAddForm && !isReadOnly && (
             <div className="bg-[#fafafa] rounded-xl p-4 mb-6">
               <h3 className="text-lg font-semibold text-[#0d0d0d] mb-4">
                 {editingLog ? "Edit Trip Log" : "Add New Trip Entry"}
@@ -410,7 +412,7 @@ export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose
           )}
 
           {/* Complete Trip Form */}
-          {completingLog && (
+          {completingLog && !isReadOnly && (
             <div className="bg-[#d4fae8] rounded-xl p-4 mb-6">
               <h3 className="text-lg font-semibold text-[#0d0d0d] mb-4">Complete Trip</h3>
               <p className="text-sm text-[#333333] mb-4">
@@ -475,7 +477,8 @@ export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose
             <div className="mb-6">
               <button
                 onClick={() => setShowAddForm(true)}
-                className="flex items-center gap-2 px-5 py-2 bg-[#0d0d0d] text-white rounded-full text-sm font-medium hover:opacity-90"
+                disabled={isReadOnly}
+                className="flex items-center gap-2 px-5 py-2 bg-[#0d0d0d] text-white rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -546,34 +549,36 @@ export default function TripLogModal({ taxiId, taxiRegistration, isOpen, onClose
                         <p className="text-sm text-[#888888] mt-2 italic">{log.notes}</p>
                       )}
                     </div>
-                    <div className="flex items-center gap-2">
-                      {log.status === "in-progress" && (
+                    {!isReadOnly && (
+                      <div className="flex items-center gap-2">
+                        {log.status === "in-progress" && (
+                          <button
+                            onClick={() => startCompleting(log)}
+                            className="px-4 py-2 bg-[#d4fae8] text-[#0fa76e] rounded-full text-sm font-medium hover:bg-[#c4ead8]"
+                          >
+                            Complete
+                          </button>
+                        )}
                         <button
-                          onClick={() => startCompleting(log)}
-                          className="px-4 py-2 bg-[#d4fae8] text-[#0fa76e] rounded-full text-sm font-medium hover:bg-[#c4ead8]"
+                          onClick={() => startEditing(log)}
+                          className="p-2 text-[#666666] hover:bg-[#f5f5f5] rounded-full"
+                          title="Edit"
                         >
-                          Complete
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
                         </button>
-                      )}
-                      <button
-                        onClick={() => startEditing(log)}
-                        className="p-2 text-[#666666] hover:bg-[#f5f5f5] rounded-full"
-                        title="Edit"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={() => log.id && handleDeleteLog(log.id)}
-                        className="p-2 text-[#d45656] hover:bg-[#fce8e8] rounded-full"
-                        title="Delete"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
+                        <button
+                          onClick={() => log.id && handleDeleteLog(log.id)}
+                          className="p-2 text-[#d45656] hover:bg-[#fce8e8] rounded-full"
+                          title="Delete"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

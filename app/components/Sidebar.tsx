@@ -22,7 +22,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
       </svg>
     ),
-    allowedRoles: ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
+    allowedRoles: ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner", "Driver"],
   },
   {
     label: "My Fleet",
@@ -32,7 +32,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
       </svg>
     ),
-    allowedRoles: ["Director", "Super Admin", "Owner"],
+    allowedRoles: ["Director", "Super Admin", "Owner", "Driver"],
   },
   {
     label: "Drivers",
@@ -42,7 +42,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
       </svg>
     ),
-    allowedRoles: ["Director", "Super Admin", "Route Admin", "Owner"],
+    allowedRoles: ["Director", "Super Admin", "Route Admin", "Owner", "Driver"],
   },
   {
     label: "Routes",
@@ -52,7 +52,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0121 18.382V7.618a1 1 0 01-.553-.894L15 7m0 13V7" />
       </svg>
     ),
-    allowedRoles: ["Director", "Super Admin", "Route Admin"],
+    allowedRoles: ["Director", "Super Admin", "Route Admin", "Driver"],
   },
   {
     label: "Trips",
@@ -62,7 +62,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
-    allowedRoles: ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
+    allowedRoles: ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner", "Driver"],
   },
   {
     label: "Logs",
@@ -72,7 +72,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
       </svg>
     ),
-    allowedRoles: ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
+    allowedRoles: ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner", "Driver"],
   },
   {
     label: "Users",
@@ -82,7 +82,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
       </svg>
     ),
-    allowedRoles: ["Director", "Super Admin"],
+    allowedRoles: ["Director", "Super Admin", "Driver"],
   },
   {
     label: "Owners",
@@ -92,7 +92,7 @@ const navItems: NavItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
       </svg>
     ),
-    allowedRoles: ["Director", "Super Admin"],
+    allowedRoles: ["Director", "Super Admin", "Driver"],
   },
 ];
 
@@ -102,6 +102,7 @@ const roleLabels: Record<UserRole, string> = {
   "Junior Admin": "Junior Admin",
   "Route Admin": "Route Admin",
   Owner: "Fleet Owner",
+  Driver: "Driver (Read Only)",
 };
 
 const roleColors: Record<UserRole, string> = {
@@ -110,6 +111,7 @@ const roleColors: Record<UserRole, string> = {
   "Junior Admin": "bg-[#d4fae8] text-[#0fa76e]",
   "Route Admin": "bg-[#f5f5f5] text-[#666666]",
   Owner: "bg-[#fef3c7] text-[#92400e]",
+  Driver: "bg-[#e0f2fe] text-[#0369a1]",
 };
 
 export default function Sidebar() {

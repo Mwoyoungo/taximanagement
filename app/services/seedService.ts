@@ -53,6 +53,13 @@ const SEED_USERS: SeedUser[] = [
     role: "Owner",
     phone: "+1234567895",
   },
+  {
+    email: "driver@taxi.com",
+    password: "password123",
+    name: "Sample Driver",
+    role: "Driver",
+    phone: "+1234567896",
+  },
 ];
 
 export async function seedUsers(): Promise<{ success: boolean; message: string; created: string[]; errors: string[] }> {

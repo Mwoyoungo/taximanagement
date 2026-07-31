@@ -12,18 +12,19 @@ const DASHBOARD_TITLES: Record<UserRole, string> = {
   "Junior Admin": "Operations Dashboard",
   "Route Admin": "Route Manager Dashboard",
   Owner: "My Fleet Dashboard",
+  Driver: "Driver Dashboard",
 };
 
 // Add Logs route permissions
 const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
-  "/": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
-  "/taxis": ["Director", "Super Admin", "Owner"],
-  "/drivers": ["Director", "Super Admin", "Route Admin", "Owner"],
-  "/routes": ["Director", "Super Admin", "Route Admin"],
-  "/trips": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
-  "/logs": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner"],
-  "/users": ["Director", "Super Admin"],
-  "/owners": ["Director", "Super Admin"],
+  "/": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner", "Driver"],
+  "/taxis": ["Director", "Super Admin", "Owner", "Driver"],
+  "/drivers": ["Director", "Super Admin", "Route Admin", "Owner", "Driver"],
+  "/routes": ["Director", "Super Admin", "Route Admin", "Driver"],
+  "/trips": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner", "Driver"],
+  "/logs": ["Director", "Super Admin", "Junior Admin", "Route Admin", "Owner", "Driver"],
+  "/users": ["Director", "Super Admin", "Driver"],
+  "/owners": ["Director", "Super Admin", "Driver"],
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import TripLogModal from "@/app/components/TripLogModal";
 import { createTaxi, getAllTaxis, Taxi } from "@/app/services/taxiService";
 import { getAllRoutes, Route } from "@/app/services/routeService";
+import { useAuth } from "@/app/context/AuthContext";
 
 const statusColors = {
   Active: "bg-[#d4fae8] text-[#0fa76e]",
@@ -12,6 +13,7 @@ const statusColors = {
 };
 
 export default function TaxisPage() {
+  const { isReadOnly } = useAuth();
   const [taxis, setTaxis] = useState<Taxi[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -129,7 +131,8 @@ export default function TaxisPage() {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#0d0d0d] text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity shadow-[rgba(0,0,0,0.06)_0px_1px_2px] whitespace-nowrap"
+          disabled={isReadOnly}
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#0d0d0d] text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity shadow-[rgba(0,0,0,0.06)_0px_1px_2px] whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -139,7 +142,7 @@ export default function TaxisPage() {
       </div>
 
       {/* Add Taxi Form */}
-      {showForm && (
+      {showForm && !isReadOnly && (
         <div className="bg-white border border-[rgba(0,0,0,0.05)] rounded-2xl p-4 sm:p-6 shadow-[rgba(0,0,0,0.03)_0px_2px_4px] mb-6">
           <h2 className="text-lg sm:text-xl font-semibold text-[#0d0d0d] tracking-tight mb-4 sm:mb-6">Add New Taxi</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
