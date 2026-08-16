@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllTripLogs, formatTimestamp } from "@/app/services/tripLogService";
+import { TripLog } from "@/app/types/trip-log";
 
 interface Trip {
   id: string;
@@ -8,6 +10,7 @@ interface Trip {
   driver: string;
   taxi: string;
   startTime: string;
+  startDate: string;
   endTime?: string;
   fare: number;
   status: "Live" | "Completed" | "Cancelled";
@@ -19,21 +22,63 @@ const statusColors = {
   Cancelled: "bg-[#f5f5f5] text-[#666666]",
 };
 
+function toTripStatus(status: TripLog["status"]): Trip["status"] {
+  if (status === "in-progress") return "Live";
+  if (status === "cancelled") return "Cancelled";
+  return "Completed";
+}
+
+function toTrip(log: TripLog): Trip {
+  return {
+    id: log.id ? `TRP-${log.id.slice(-6).toUpperCase()}` : "TRP-------",
+    route: log.routeName || `${log.departureLocation} → ${log.destination}`,
+    driver: log.driverName,
+    taxi: log.taxiRegistration,
+    startTime: formatTimestamp(log.departureTime),
+    startDate: log.departureTime ? log.departureTime.toDate().toISOString().slice(0, 10) : "",
+    endTime: log.arrivalTime ? formatTimestamp(log.arrivalTime) : undefined,
+    fare: log.fare || 0,
+    status: toTripStatus(log.status),
+  };
+}
+
 export default function TripsPage() {
   const [trips, setTrips] = useState<Trip[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"live" | "history">("live");
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState("");
 
+  useEffect(() => {
+    loadTrips();
+  }, []);
+
+  async function loadTrips() {
+    setLoading(true);
+    try {
+      const logs = await getAllTripLogs();
+      setTrips(logs.map(toTrip));
+    } catch (error) {
+      console.error("Error loading trips:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const liveTrips = trips.filter((t) => t.status === "Live");
   const completedTrips = trips.filter((t) => t.status !== "Live");
 
-  const filteredTrips = (activeTab === "live" ? liveTrips : completedTrips).filter(
-    (trip) =>
+  const filteredTrips = (activeTab === "live" ? liveTrips : completedTrips).filter((trip) => {
+    const matchesSearch =
       trip.route.toLowerCase().includes(searchQuery.toLowerCase()) ||
       trip.driver.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      trip.taxi.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+      trip.taxi.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesDate =
+      activeTab !== "history" || !dateFilter || trip.startDate === dateFilter;
+
+    return matchesSearch && matchesDate;
+  });
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
@@ -84,7 +129,7 @@ export default function TripsPage() {
             </div>
             <div>
               <p className="text-2xl font-semibold text-[#0d0d0d]">
-                ${trips.reduce((sum, t) => sum + (t.fare || 0), 0)}
+                ${trips.reduce((sum, t) => sum + (t.fare || 0), 0).toFixed(2)}
               </p>
               <p className="text-sm text-[#666666]">Total Revenue</p>
             </div>
@@ -196,7 +241,7 @@ export default function TripsPage() {
                     </td>
                   )}
                   <td className="px-6 py-4 text-sm font-medium text-[#0d0d0d]">
-                    {trip.fare > 0 ? `$${trip.fare}` : "--"}
+                    {trip.fare > 0 ? `$${trip.fare.toFixed(2)}` : "--"}
                   </td>
                   <td className="px-6 py-4">
                     <span
@@ -210,7 +255,12 @@ export default function TripsPage() {
             </tbody>
           </table>
         </div>
-        {filteredTrips.length === 0 && (
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin w-8 h-8 border-2 border-[#ffc93e] border-t-transparent rounded-full mx-auto"></div>
+            <p className="text-sm text-[#666666] mt-2">Loading trips...</p>
+          </div>
+        ) : filteredTrips.length === 0 && (
           <div className="text-center py-12">
             <p className="text-[#888888] text-sm">
               {activeTab === "live" ? "No live trips at the moment." : "No trips found matching your search."}

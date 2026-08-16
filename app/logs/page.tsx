@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { TripLog } from "@/app/types/trip-log";
 import { getAllTripLogs, formatTimestamp, calculateDuration } from "@/app/services/tripLogService";
+import { getAllTaxis, Taxi } from "@/app/services/taxiService";
 import TripLogModal from "@/app/components/TripLogModal";
 
 const statusColors = {
@@ -18,6 +19,32 @@ const statusLabels = {
   cancelled: "Cancelled",
 };
 
+// Labels/colors used specifically for the "Route Trips" report (Routes -> View Trips)
+const routeTripStatusLabels = {
+  "in-progress": "Departed",
+  completed: "Arrived",
+  cancelled: "Cancelled",
+};
+
+const routeTripStatusColors = {
+  "in-progress": "bg-[#ffc93e] text-[#0d0d0d]",
+  completed: "bg-[#d4fae8] text-[#0fa76e]",
+  cancelled: "bg-[#f5f5f5] text-[#666666]",
+};
+
+function sumCompletedDuration(logs: TripLog[]): string {
+  let totalMinutes = 0;
+  for (const log of logs) {
+    if (log.status === "completed" && log.departureTime && log.arrivalTime) {
+      const diff = log.arrivalTime.toDate().getTime() - log.departureTime.toDate().getTime();
+      totalMinutes += Math.floor(diff / (1000 * 60));
+    }
+  }
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+}
+
 export default function LogsPage() {
   const searchParams = useSearchParams();
   const routeFilter = searchParams.get("route");
@@ -28,10 +55,25 @@ export default function LogsPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedTaxi, setSelectedTaxi] = useState<{ id: string; registration: string } | null>(null);
   const [showLogModal, setShowLogModal] = useState(false);
+  const [taxis, setTaxis] = useState<Taxi[]>([]);
 
   useEffect(() => {
     loadLogs();
+    loadTaxis();
   }, []);
+
+  async function loadTaxis() {
+    try {
+      const data = await getAllTaxis();
+      setTaxis(data);
+    } catch (error) {
+      console.error("Error loading taxis:", error);
+    }
+  }
+
+  function ownerForTaxi(taxiId: string): string {
+    return taxis.find((t) => t.id === taxiId)?.owner || "—";
+  }
 
   async function loadLogs() {
     setLoading(true);
@@ -83,7 +125,7 @@ export default function LogsPage() {
       <div className="mb-6 lg:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <h1 className="text-3xl sm:text-[40px] font-semibold text-[#0d0d0d] tracking-tight leading-tight">
-            Trip Logs
+            {routeFilter ? "Route Trips" : "Trip Logs"}
           </h1>
           {routeFilter && (
             <div className="flex items-center gap-2 px-4 py-2 bg-[#ffc93e] text-[#0d0d0d] rounded-full text-sm font-medium">
@@ -175,6 +217,60 @@ export default function LogsPage() {
             <p className="text-[#666666]">No trip logs found.</p>
             <p className="text-sm text-[#888888] mt-1">Add trip entries from the Taxis page.</p>
           </div>
+        ) : routeFilter ? (
+          <>
+            {/* Route Trips Report */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-[rgba(0,0,0,0.05)] bg-[#fafafa]">
+                    <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Route ID</th>
+                    <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Route Name</th>
+                    <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Driver</th>
+                    <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Owner</th>
+                    <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Taxi</th>
+                    <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Time Arrival</th>
+                    <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Time Departure</th>
+                    <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Fare</th>
+                    <th className="text-left px-6 py-4 text-sm font-semibold text-[#0d0d0d]">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredLogs.map((log) => (
+                    <tr
+                      key={log.id}
+                      className="border-b border-[rgba(0,0,0,0.05)] hover:bg-[#fafafa] transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <span className="font-mono text-sm font-medium text-[#0d0d0d]">{log.routeId || "—"}</span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-[#0d0d0d]">
+                        {log.departureLocation} → {log.destination}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-[#333333]">{log.driverName || "—"}</td>
+                      <td className="px-6 py-4 text-sm text-[#333333]">{ownerForTaxi(log.taxiId)}</td>
+                      <td className="px-6 py-4 text-sm text-[#333333]">{log.taxiRegistration || "—"}</td>
+                      <td className="px-6 py-4 text-sm text-[#666666]">{formatTimestamp(log.arrivalTime)}</td>
+                      <td className="px-6 py-4 text-sm text-[#666666]">{formatTimestamp(log.departureTime)}</td>
+                      <td className="px-6 py-4 text-sm font-medium text-[#0d0d0d]">
+                        {log.fare ? `$${log.fare.toFixed(2)}` : "—"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${routeTripStatusColors[log.status]}`}>
+                          {routeTripStatusLabels[log.status]}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="px-6 py-4 border-t border-[rgba(0,0,0,0.05)]">
+              <span className="text-sm text-[#666666]">
+                Duration: <span className="font-semibold text-[#0fa76e]">{sumCompletedDuration(filteredLogs)}</span>
+              </span>
+            </div>
+          </>
         ) : (
           <>
             {/* Desktop Table */}
